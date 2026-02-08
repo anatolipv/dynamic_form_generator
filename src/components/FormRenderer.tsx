@@ -4,6 +4,7 @@ import { Box, Button, Typography, Paper, Alert, Divider } from '@mui/material'
 import type { FormSchema } from '../types/form.types'
 import { buildValidationSchema } from '../utils/validationBuilder'
 import { FieldRenderer } from './FieldRenderer'
+import { GroupRenderer } from './GroupRenderer/GroupRenderer'
 import { isFieldConfig } from '../types/form.types'
 import { useState } from 'react'
 
@@ -11,19 +12,11 @@ import { useState } from 'react'
  * Props for FormRenderer component
  */
 interface FormRendererProps {
-  /**
-   * Form schema configuration
-   */
   schema: FormSchema
 }
 
 /**
  * FormRenderer Component
- *
- * Main form orchestrator that sets up React Hook Form with Zod validation,
- * renders all fields, and handles form submission with structured JSON output.
- *
- * @param props - Component props
  */
 export function FormRenderer({ schema }: FormRendererProps) {
   const [submittedData, setSubmittedData] = useState<object | null>(null)
@@ -32,11 +25,13 @@ export function FormRenderer({ schema }: FormRendererProps) {
   const validationSchema = buildValidationSchema(schema.fields)
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(validationSchema),
+    shouldUnregister: true,
   })
 
   const onSubmit = (data: object) => {
@@ -78,51 +73,20 @@ export function FormRenderer({ schema }: FormRendererProps) {
                 <FieldRenderer
                   key={item.id}
                   field={item}
+                  control={control}
                   register={register}
-                  error={errors[item.id] as FieldError}
+                  error={errors[item.id] as FieldError | undefined}
                 />
               )
             } else {
               return (
-                <Box
+                <GroupRenderer
                   key={item.id}
-                  sx={{ mb: 3 }}
-                >
-                  <Typography
-                    variant="h6"
-                    sx={{ mb: 2 }}
-                  >
-                    {item.title}
-                  </Typography>
-                  {item.description && (
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      {item.description}
-                    </Typography>
-                  )}
-                  <Box sx={{ pl: 2 }}>
-                    {item.fields.map((field) => {
-                      if (isFieldConfig(field)) {
-                        const groupErrors = errors[item.id] as
-                          | Record<string, FieldError>
-                          | undefined
-                        return (
-                          <FieldRenderer
-                            key={field.id}
-                            field={field}
-                            register={register}
-                            error={groupErrors?.[field.id] as FieldError}
-                            parentId={item.id}
-                          />
-                        )
-                      }
-                      return null
-                    })}
-                  </Box>
-                </Box>
+                  group={item}
+                  control={control}
+                  register={register}
+                  errors={errors}
+                />
               )
             }
           })}

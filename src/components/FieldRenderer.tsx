@@ -1,10 +1,16 @@
-import type { UseFormRegister, FieldError, FieldValues } from 'react-hook-form'
+import type {
+  Control,
+  UseFormRegister,
+  FieldError,
+  FieldValues,
+} from 'react-hook-form'
 import type { FieldConfig } from '../types/form.types'
 import { TextInput } from './fields/TextInput/TextInput'
 import { TextareaInput } from './fields/TextareaInput/TextareaInput'
 import { SelectInput } from './fields/SelectInput/SelectInput'
 import { CheckboxInput } from './fields/CheckboxInput/CheckboxInput'
 import { RadioInput } from './fields/RadioInput/RadioInput'
+import { useConditionalLogic } from '../hooks/useConditionalLogic'
 
 /**
  * Props for FieldRenderer component
@@ -14,6 +20,10 @@ interface FieldRendererProps {
    * Field configuration from schema
    */
   field: FieldConfig
+  /**
+   * React Hook Form control object
+   */
+  control: Control<FieldValues>
   /**
    * React Hook Form register function
    */
@@ -37,10 +47,17 @@ interface FieldRendererProps {
  */
 export function FieldRenderer({
   field,
+  control,
   register,
   error,
   parentId,
 }: FieldRendererProps) {
+  const { shouldShowField } = useConditionalLogic(control, [field.showWhen])
+
+  if (!shouldShowField(field.showWhen)) {
+    return null
+  }
+
   const fieldPath = parentId ? `${parentId}.${field.id}` : field.id
 
   switch (field.type) {

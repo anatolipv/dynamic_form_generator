@@ -31,9 +31,6 @@ export function buildValidationSchema(
 
 /**
  * Builds Zod schema for a single field
- *
- * @param field - Field configuration
- * @returns Zod schema for the field
  */
 function buildFieldSchema(field: FieldConfig): z.ZodTypeAny {
   let schema: z.ZodTypeAny
@@ -58,6 +55,12 @@ function buildFieldSchema(field: FieldConfig): z.ZodTypeAny {
       schema = z.string()
   }
 
+  // Conditional fields are optional - shouldUnregister removes them from output
+  if (field.showWhen) {
+    return schema.optional()
+  }
+
+  // Apply validations
   if (field.validations && field.validations.length > 0) {
     schema = applyValidations(schema, field.validations)
   } else if (field.type !== 'checkbox') {
@@ -69,10 +72,6 @@ function buildFieldSchema(field: FieldConfig): z.ZodTypeAny {
 
 /**
  * Applies validation rules to a Zod schema
- *
- * @param schema - Base Zod schema
- * @param validations - Array of validation rules
- * @returns Zod schema with validations applied
  */
 function applyValidations(
   schema: z.ZodTypeAny,
