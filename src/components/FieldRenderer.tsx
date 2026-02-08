@@ -62,6 +62,7 @@ export function FieldRenderer({
 
   switch (field.type) {
     case 'text':
+    case 'text-with-validation':
       return (
         <TextInput
           id={fieldPath}

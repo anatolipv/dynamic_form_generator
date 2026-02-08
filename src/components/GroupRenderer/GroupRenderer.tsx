@@ -72,7 +72,7 @@ export function GroupRenderer({
                 control={control}
                 register={register}
                 error={groupErrors?.[item.id] as FieldError | undefined}
-                parentId={group.id}
+                parentId={fullGroupId}
               />
             )
           } else {

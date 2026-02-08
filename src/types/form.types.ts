@@ -46,11 +46,21 @@ export interface ValidationRule {
   /** Error message shown when validation fails */
   message: string
   /** Optional condition that determines when this rule applies */
-  condition?: {
-    field: string
-    operator: 'equals' | 'notEquals'
-    value: string
-  }
+  condition?: ValidationCondition
+}
+
+/**
+ * Condition used for conditional validation rule activation
+ *
+ * When the condition is met, the associated validation rule is applied.
+ */
+export interface ValidationCondition {
+  /** Field path to evaluate (supports dot notation for nested fields) */
+  field: string
+  /** Comparison operator */
+  operator: 'equals' | 'notEquals'
+  /** Value to compare against */
+  value: string
 }
 
 /**
@@ -156,6 +166,8 @@ export interface GroupConfig {
   fields: (FieldConfig | GroupConfig)[]
   /** Simple visibility condition for the entire group */
   showWhen?: ShowWhenCondition
+  /** API auto-fill configuration for group-level population */
+  autoFill?: AutoFillConfig
 }
 
 /**

@@ -111,4 +111,29 @@ describe('FormRenderer', () => {
     expect(screen.getByText(/"name": "John Doe"/)).toBeInTheDocument()
     expect(screen.getByText(/"email": "john@example.com"/)).toBeInTheDocument()
   })
+
+  it('clears previous output when submit has validation errors', async () => {
+    const user = userEvent.setup()
+
+    render(<FormRenderer schema={simpleSchema} />)
+
+    const nameInput = screen.getByLabelText('Name')
+    const submitButton = screen.getByTestId('form-submit-button')
+
+    await user.type(nameInput, 'John Doe')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.getByText('Form Output')).toBeInTheDocument()
+    })
+
+    await user.clear(nameInput)
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.queryByText('Form Output')).not.toBeInTheDocument()
+    })
+
+    expect(screen.getByText('Name is required')).toBeInTheDocument()
+  })
 })

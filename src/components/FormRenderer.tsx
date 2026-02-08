@@ -44,6 +44,11 @@ export function FormRenderer({ schema }: FormRendererProps) {
     }
   }
 
+  const onInvalidSubmit = () => {
+    setSubmittedData(null)
+    setSubmitError(null)
+  }
+
   return (
     <Paper
       elevation={2}
@@ -65,7 +70,7 @@ export function FormRenderer({ schema }: FormRendererProps) {
         </Typography>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit, onInvalidSubmit)}>
         <Box sx={{ mb: 3 }}>
           {schema.fields.map((item) => {
             if (isFieldConfig(item)) {
