@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { FormRenderer } from './FormRenderer'
 import type { FormSchema } from '../types/form.types'
+import userEvent from '@testing-library/user-event'
 
 describe('FormRenderer', () => {
   const simpleSchema: FormSchema = {
@@ -56,8 +57,8 @@ describe('FormRenderer', () => {
   it('renders all fields', () => {
     render(<FormRenderer schema={simpleSchema} />)
 
-    expect(screen.getByText('Name')).toBeInTheDocument()
-    expect(screen.getByText('Email')).toBeInTheDocument()
+    expect(screen.getByLabelText('Name')).toBeInTheDocument()
+    expect(screen.getByLabelText('Email')).toBeInTheDocument()
   })
 
   it('renders submit button', () => {
@@ -74,7 +75,7 @@ describe('FormRenderer', () => {
     expect(screen.getByText('Registration Form')).toBeInTheDocument()
     expect(screen.getByText('Personal Information')).toBeInTheDocument()
     expect(screen.getByText('Your personal details')).toBeInTheDocument()
-    expect(screen.getByText('First Name')).toBeInTheDocument()
+    expect(screen.getByLabelText('First Name')).toBeInTheDocument()
   })
 
   it('disables submit button while submitting', () => {
@@ -85,9 +86,29 @@ describe('FormRenderer', () => {
     expect(submitButton).not.toBeDisabled()
   })
 
-  // Skipped - will test properly with real field components
-  it.skip('shows form output after submission', () => {
-    // Placeholder fields don't create real inputs, so submission doesn't work as expected
-    // This will be properly tested when we have real field components
+  it('shows form output after submission', async () => {
+    const user = userEvent.setup()
+
+    render(<FormRenderer schema={simpleSchema} />)
+
+    // Fill in the form fields
+    const nameInput = screen.getByLabelText('Name')
+    const emailInput = screen.getByLabelText('Email')
+
+    await user.type(nameInput, 'John Doe')
+    await user.type(emailInput, 'john@example.com')
+
+    // Submit form
+    const submitButton = screen.getByTestId('form-submit-button')
+    await user.click(submitButton)
+
+    // Check output appears
+    await waitFor(() => {
+      expect(screen.getByText('Form Output')).toBeInTheDocument()
+    })
+
+    // Verify submitted data is displayed
+    expect(screen.getByText(/"name": "John Doe"/)).toBeInTheDocument()
+    expect(screen.getByText(/"email": "john@example.com"/)).toBeInTheDocument()
   })
 })

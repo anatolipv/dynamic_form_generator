@@ -22,7 +22,7 @@ export function buildValidationSchema(
       shape[item.id] = buildFieldSchema(item)
     } else {
       const nestedShape = buildValidationSchema(item.fields)
-      shape[item.id] = nestedShape.optional()
+      shape[item.id] = nestedShape
     }
   })
 
@@ -63,8 +63,6 @@ function buildFieldSchema(field: FieldConfig): z.ZodTypeAny {
   } else if (field.type !== 'checkbox') {
     schema = schema.optional()
   }
-
-  schema = schema.optional()
 
   return schema
 }

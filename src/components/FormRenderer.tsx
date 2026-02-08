@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm, type FieldError } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, Typography, Paper, Alert, Divider } from '@mui/material'
 import type { FormSchema } from '../types/form.types'
@@ -32,6 +32,7 @@ export function FormRenderer({ schema }: FormRendererProps) {
   const validationSchema = buildValidationSchema(schema.fields)
 
   const {
+    register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -74,21 +75,12 @@ export function FormRenderer({ schema }: FormRendererProps) {
           {schema.fields.map((item) => {
             if (isFieldConfig(item)) {
               return (
-                <Box
+                <FieldRenderer
                   key={item.id}
-                  sx={{ mb: 2 }}
-                >
-                  <FieldRenderer field={item} />
-                  {errors[item.id] && (
-                    <Typography
-                      variant="caption"
-                      color="error"
-                      sx={{ display: 'block', mt: 0.5 }}
-                    >
-                      {errors[item.id]?.message as string}
-                    </Typography>
-                  )}
-                </Box>
+                  field={item}
+                  register={register}
+                  error={errors[item.id] as FieldError}
+                />
               )
             } else {
               return (
@@ -114,22 +106,17 @@ export function FormRenderer({ schema }: FormRendererProps) {
                   <Box sx={{ pl: 2 }}>
                     {item.fields.map((field) => {
                       if (isFieldConfig(field)) {
+                        const groupErrors = errors[item.id] as
+                          | Record<string, FieldError>
+                          | undefined
                         return (
-                          <Box
+                          <FieldRenderer
                             key={field.id}
-                            sx={{ mb: 2 }}
-                          >
-                            <FieldRenderer field={field} />
-                            {errors[field.id] && (
-                              <Typography
-                                variant="caption"
-                                color="error"
-                                sx={{ display: 'block', mt: 0.5 }}
-                              >
-                                {errors[field.id]?.message as string}
-                              </Typography>
-                            )}
-                          </Box>
+                            field={field}
+                            register={register}
+                            error={groupErrors?.[field.id] as FieldError}
+                            parentId={item.id}
+                          />
                         )
                       }
                       return null

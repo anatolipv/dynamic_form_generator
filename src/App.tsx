@@ -36,7 +36,10 @@ function App() {
 
       {schema && (
         <Box sx={{ mt: 4 }}>
-          <FormRenderer schema={schema} />
+          <FormRenderer
+            schema={schema}
+            key={JSON.stringify(schema)}
+          />
         </Box>
       )}
     </Container>
