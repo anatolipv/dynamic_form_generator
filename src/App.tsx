@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Container, Typography, Box, Divider } from '@mui/material'
 import { JSONInput } from './components/JSONInput'
+import { FormRenderer } from './components/FormRenderer'
 import type { FormSchema } from './types/form.types'
 
 function App() {
@@ -35,18 +36,7 @@ function App() {
 
       {schema && (
         <Box sx={{ mt: 4 }}>
-          <Typography
-            variant="h5"
-            sx={{ mb: 1 }}
-          >
-            Generated Form: {schema.title}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-          >
-            Form renderer will be implemented in next task...
-          </Typography>
+          <FormRenderer schema={schema} />
         </Box>
       )}
     </Container>
