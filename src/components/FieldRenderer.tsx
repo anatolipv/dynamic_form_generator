@@ -116,7 +116,7 @@ export function FieldRenderer({
         <CheckboxInput
           id={fieldPath}
           label={field.label}
-          register={register}
+          control={control}
           error={error}
         />
       )

@@ -1,5 +1,5 @@
 {
-  "title": "Zetta Secondary Demo Form",
+  "title": "Secondary Demo Form",
   "description": "Second schema for testing per-form auto-save isolation",
   "fields": [
     {
@@ -53,9 +53,7 @@
       "type": "text-with-validation",
       "label": "Phone",
       "showWhen": { "field": "contactChannel", "equals": "phone" },
-      "validations": [
-        { "type": "required", "message": "Phone is required" }
-      ]
+      "validations": [{ "type": "required", "message": "Phone is required" }]
     },
     {
       "id": "topic",
@@ -66,9 +64,7 @@
       "id": "consent",
       "type": "checkbox",
       "label": "I agree to be contacted",
-      "validations": [
-        { "type": "required", "message": "Consent is required" }
-      ]
+      "validations": [{ "type": "required", "message": "Consent is required" }]
     }
   ]
 }

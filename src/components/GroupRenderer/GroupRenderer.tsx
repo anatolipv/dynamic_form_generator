@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, Paper } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 import { useEffect, useRef } from 'react'
 import type {
   Control,
@@ -40,6 +41,7 @@ export function GroupRenderer({
   errors,
   parentId,
 }: GroupRendererProps) {
+  const depth = parentId ? parentId.split('.').length : 0
   const { shouldShowField } = useConditionalLogic(control, [group.showWhen])
   const isVisible = shouldShowField(group.showWhen)
   const fullGroupId = parentId ? `${parentId}.${group.id}` : group.id
@@ -60,10 +62,25 @@ export function GroupRenderer({
   const groupErrors = errors[group.id] as Record<string, unknown> | undefined
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Paper
+      elevation={depth === 0 ? 2 : 0}
+      sx={(theme) => ({
+        mb: 3,
+        px: 2,
+        py: 2,
+        borderRadius: 2,
+        border: 1,
+        borderColor: alpha(theme.palette.primary.main, depth === 0 ? 0.35 : 0.2),
+        borderLeftWidth: 4,
+        bgcolor:
+          theme.palette.mode === 'light'
+            ? alpha(theme.palette.primary.main, 0.03 + depth * 0.01)
+            : alpha(theme.palette.primary.main, 0.09 + depth * 0.01),
+      })}
+    >
       <Typography
         variant="h6"
-        sx={{ mb: 2 }}
+        sx={{ mb: 1.5 }}
       >
         {group.title}
       </Typography>
@@ -76,7 +93,7 @@ export function GroupRenderer({
           {group.description}
         </Typography>
       )}
-      <Box sx={{ pl: 2 }}>
+      <Box sx={{ pl: 1 }}>
         {group.fields.map((item) => {
           if (isFieldConfig(item)) {
             return (
@@ -105,6 +122,6 @@ export function GroupRenderer({
           }
         })}
       </Box>
-    </Box>
+    </Paper>
   )
 }

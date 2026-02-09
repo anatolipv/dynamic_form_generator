@@ -6,6 +6,7 @@ import {
   Radio,
   FormHelperText,
 } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 import { Controller } from 'react-hook-form'
 import type {
   Control,
@@ -70,12 +71,37 @@ export function RadioInput<TFieldValues extends FieldValues = FieldValues>({
       margin="normal"
       error={!!error}
       fullWidth
+      sx={(theme) => ({
+        px: 2,
+        py: 1.5,
+        border: 1,
+        borderRadius: 2,
+        borderColor: error ? 'error.main' : 'divider',
+        transition:
+          'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
+        '&:hover': {
+          borderColor: error ? 'error.main' : 'primary.main',
+        },
+        '&:focus-within': {
+          borderColor: error ? 'error.main' : 'primary.main',
+          boxShadow: `0 0 0 3px ${alpha(
+            error ? theme.palette.error.main : theme.palette.primary.main,
+            0.2,
+          )}`,
+        },
+      })}
     >
-      <FormLabel component="legend">{label}</FormLabel>
+      <FormLabel
+        component="legend"
+        sx={{ mb: 0.5 }}
+      >
+        {label}
+      </FormLabel>
       <Controller
         // Typed by caller through generic TFieldValues and id path
         name={id}
         control={control}
+        defaultValue={'' as never}
         render={({ field }) => (
           <RadioGroup
             name={field.name}

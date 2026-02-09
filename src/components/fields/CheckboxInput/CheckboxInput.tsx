@@ -1,22 +1,31 @@
 import { FormControlLabel, Checkbox, FormHelperText, Box } from '@mui/material'
-import type { UseFormRegister, FieldError, FieldValues } from 'react-hook-form'
+import { alpha } from '@mui/material/styles'
+import { Controller } from 'react-hook-form'
+import type {
+  Control,
+  FieldError,
+  FieldPath,
+  FieldValues,
+} from 'react-hook-form'
 
 /**
  * Props for CheckboxInput component
  */
-export interface CheckboxInputProps {
+export interface CheckboxInputProps<
+  TFieldValues extends FieldValues = FieldValues,
+> {
   /**
    * Field ID for form registration
    */
-  id: string
+  id: FieldPath<TFieldValues>
   /**
    * Field label
    */
   label: string
   /**
-   * React Hook Form register function
+   * React Hook Form control object
    */
-  register: UseFormRegister<FieldValues>
+  control: Control<TFieldValues>
   /**
    * Validation error if present
    */
@@ -30,17 +39,55 @@ export interface CheckboxInputProps {
  *
  * @param props - Component props
  */
-export function CheckboxInput({
+export function CheckboxInput<TFieldValues extends FieldValues = FieldValues>({
   id,
   label,
-  register,
+  control,
   error,
-}: CheckboxInputProps) {
+}: CheckboxInputProps<TFieldValues>) {
   return (
-    <Box sx={{ my: 2 }}>
-      <FormControlLabel
-        control={<Checkbox {...register(id)} />}
-        label={label}
+    <Box
+      sx={(theme) => ({
+        my: 2,
+        px: 2,
+        py: 1,
+        border: 1,
+        borderRadius: 2,
+        borderColor: error ? 'error.main' : 'divider',
+        transition:
+          'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
+        '&:hover': {
+          borderColor: error ? 'error.main' : 'primary.main',
+        },
+        '&:focus-within': {
+          borderColor: error ? 'error.main' : 'primary.main',
+          boxShadow: `0 0 0 3px ${alpha(
+            error ? theme.palette.error.main : theme.palette.primary.main,
+            0.2,
+          )}`,
+        },
+        '& .MuiFormControlLabel-root': {
+          m: 0,
+        },
+      })}
+    >
+      <Controller
+        name={id}
+        control={control}
+        defaultValue={false as never}
+        render={({ field }) => (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={!!field.value}
+                onChange={(event) => field.onChange(event.target.checked)}
+                onBlur={field.onBlur}
+                inputRef={field.ref}
+              />
+            }
+            label={label}
+          />
+        )}
       />
       {error && (
         <FormHelperText

@@ -29,11 +29,10 @@ dist-ssr
 .env.production
 
 # Testing coverage
-coverage
+coverage/
 
 # TypeDoc documentation
 docs/
 
 # Build artifacts
 build
-

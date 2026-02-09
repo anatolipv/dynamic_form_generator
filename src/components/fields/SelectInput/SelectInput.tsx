@@ -74,6 +74,7 @@ export function SelectInput<TFieldValues extends FieldValues = FieldValues>({
         // Typed by caller through generic TFieldValues and id path
         name={id}
         control={control}
+        defaultValue={'' as never}
         render={({ field }) => (
           <Select
             labelId={`${id}-label`}

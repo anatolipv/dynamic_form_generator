@@ -1,10 +1,24 @@
 import { useState } from 'react'
-import { Container, Typography, Box, Divider } from '@mui/material'
+import {
+  Container,
+  Typography,
+  Box,
+  Divider,
+  IconButton,
+  Tooltip,
+} from '@mui/material'
+import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded'
+import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded'
 import { JSONInput } from './components/JSONInput'
 import { FormRenderer } from './components/FormRenderer'
 import type { FormSchema } from './types/form.types'
 
-function App() {
+export interface AppProps {
+  themeMode: 'light' | 'dark'
+  onToggleTheme: () => void
+}
+
+function App({ themeMode, onToggleTheme }: AppProps) {
   const [schema, setSchema] = useState<FormSchema | null>(null)
 
   return (
@@ -12,6 +26,30 @@ function App() {
       maxWidth="lg"
       sx={{ py: 4 }}
     >
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          mb: 1,
+        }}
+      >
+        <Tooltip
+          title={themeMode === 'light' ? 'Switch to dark' : 'Switch to light'}
+        >
+          <IconButton
+            color="primary"
+            onClick={onToggleTheme}
+            aria-label="toggle color theme"
+          >
+            {themeMode === 'light' ? (
+              <DarkModeRoundedIcon />
+            ) : (
+              <LightModeRoundedIcon />
+            )}
+          </IconButton>
+        </Tooltip>
+      </Box>
+
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography
           variant="h3"
