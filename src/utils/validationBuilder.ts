@@ -135,13 +135,13 @@ function applyValidations(
 
       case 'pattern':
         if (result instanceof z.ZodString && typeof rule.value === 'string') {
-          result = result.regex(new RegExp(rule.value), rule.message)
+          result = result.regex(buildRegex(rule.value), rule.message)
         }
         break
 
       case 'custom':
         if (result instanceof z.ZodString && typeof rule.value === 'string') {
-          result = result.regex(new RegExp(rule.value), rule.message)
+          result = result.regex(buildRegex(rule.value), rule.message)
         }
         break
     }
@@ -227,7 +227,7 @@ function validateRuleValue(value: unknown, rule: ValidationRule): boolean {
       if (typeof value !== 'string' || typeof rule.value !== 'string') {
         return true
       }
-      return new RegExp(rule.value).test(value)
+      return buildRegex(rule.value).test(value)
 
     default:
       return true
@@ -260,4 +260,9 @@ function toZodPath(path: string): (string | number)[] {
 
 function joinPath(parentPath: string, itemId: string): string {
   return parentPath ? `${parentPath}.${itemId}` : itemId
+}
+
+function buildRegex(pattern: string): RegExp {
+  // Case-insensitive matching gives better UX for alphanumeric identifiers.
+  return new RegExp(pattern, 'i')
 }

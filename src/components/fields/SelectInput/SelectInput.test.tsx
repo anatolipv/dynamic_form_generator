@@ -1,27 +1,38 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { SelectInput } from './SelectInput'
-import type { FieldValues, UseFormRegister } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import userEvent from '@testing-library/user-event'
 
+function SelectInputWithForm({
+  defaultValue = '',
+  error,
+}: {
+  defaultValue?: string
+  error?: { type: string; message: string }
+}) {
+  const { control } = useForm({
+    defaultValues: { country: defaultValue },
+  })
+
+  return (
+    <SelectInput
+      id="country"
+      label="Country"
+      options={[
+        { label: 'Option 1', value: 'opt1' },
+        { label: 'Option 2', value: 'opt2' },
+        { label: 'Option 3', value: 'opt3' },
+      ]}
+      control={control}
+      error={error}
+    />
+  )
+}
+
 describe('SelectInput', () => {
-  const mockRegister = vi.fn() as unknown as UseFormRegister<FieldValues>
-
-  const options = [
-    { label: 'Option 1', value: 'opt1' },
-    { label: 'Option 2', value: 'opt2' },
-    { label: 'Option 3', value: 'opt3' },
-  ]
-
   it('renders with label', () => {
-    render(
-      <SelectInput
-        id="country"
-        label="Country"
-        options={options}
-        register={mockRegister}
-      />,
-    )
+    render(<SelectInputWithForm />)
 
     expect(screen.getByLabelText('Country')).toBeInTheDocument()
   })
@@ -29,14 +40,8 @@ describe('SelectInput', () => {
   it('renders all options when clicked', async () => {
     const user = userEvent.setup()
 
-    render(
-      <SelectInput
-        id="country"
-        label="Country"
-        options={options}
-        register={mockRegister}
-      />,
-    )
+    render(<SelectInputWithForm />)
+
     const select = screen.getByLabelText('Country')
     await user.click(select)
 
@@ -51,29 +56,14 @@ describe('SelectInput', () => {
       message: 'Please select an option',
     }
 
-    render(
-      <SelectInput
-        id="country"
-        label="Country"
-        options={options}
-        register={mockRegister}
-        error={error}
-      />,
-    )
+    render(<SelectInputWithForm error={error} />)
 
     expect(screen.getByText('Please select an option')).toBeInTheDocument()
   })
 
-  it('calls register with correct id', () => {
-    render(
-      <SelectInput
-        id="region"
-        label="Region"
-        options={options}
-        register={mockRegister}
-      />,
-    )
+  it('shows restored value from defaultValues', () => {
+    render(<SelectInputWithForm defaultValue="opt2" />)
 
-    expect(mockRegister).toHaveBeenCalledWith('region')
+    expect(screen.getByLabelText('Country')).toHaveTextContent('Option 2')
   })
 })

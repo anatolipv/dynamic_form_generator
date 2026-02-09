@@ -5,7 +5,8 @@ import {
   MenuItem,
   FormHelperText,
 } from '@mui/material'
-import type { UseFormRegister, FieldError, FieldValues } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
+import type { Control, FieldError, FieldValues } from 'react-hook-form'
 
 /**
  * Select option structure
@@ -32,9 +33,9 @@ interface SelectInputProps {
    */
   options: SelectOption[]
   /**
-   * React Hook Form register function
+   * React Hook Form control object
    */
-  register: UseFormRegister<FieldValues>
+  control: Control<FieldValues>
   /**
    * Validation error if present
    */
@@ -52,7 +53,7 @@ export function SelectInput({
   id,
   label,
   options,
-  register,
+  control,
   error,
 }: SelectInputProps) {
   return (
@@ -62,21 +63,29 @@ export function SelectInput({
       error={!!error}
     >
       <InputLabel id={`${id}-label`}>{label}</InputLabel>
-      <Select
-        {...register(id)}
-        labelId={`${id}-label`}
-        label={label}
-        defaultValue=""
-      >
-        {options.map((option) => (
-          <MenuItem
-            key={option.value}
-            value={option.value}
+      <Controller
+        name={id}
+        control={control}
+        render={({ field }) => (
+          <Select
+            labelId={`${id}-label`}
+            label={label}
+            value={field.value ?? ''}
+            onChange={(event) => field.onChange(event.target.value)}
+            onBlur={field.onBlur}
+            inputRef={field.ref}
           >
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
+            {options.map((option) => (
+              <MenuItem
+                key={option.value}
+                value={option.value}
+              >
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+      />
       {error && <FormHelperText>{error.message}</FormHelperText>}
     </FormControl>
   )

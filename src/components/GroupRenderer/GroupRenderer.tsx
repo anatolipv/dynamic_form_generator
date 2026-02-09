@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type {
   Control,
   UseFormRegister,
@@ -43,11 +43,14 @@ export function GroupRenderer({
   const { shouldShowField } = useConditionalLogic(control, [group.showWhen])
   const isVisible = shouldShowField(group.showWhen)
   const fullGroupId = parentId ? `${parentId}.${group.id}` : group.id
+  const wasVisibleRef = useRef(isVisible)
 
   useEffect(() => {
-    if (!isVisible && unregister) {
+    // Unregister only when visibility transitions from visible to hidden.
+    if (wasVisibleRef.current && !isVisible && unregister) {
       unregister(fullGroupId)
     }
+    wasVisibleRef.current = isVisible
   }, [fullGroupId, isVisible, unregister])
 
   if (!isVisible) {

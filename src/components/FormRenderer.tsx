@@ -4,11 +4,13 @@ import { Box, Button, Typography, Paper, Alert, Divider } from '@mui/material'
 import type { FormSchema } from '../types/form.types'
 import { buildValidationSchema } from '../utils/validationBuilder'
 import { resolveAutoFillConfigs } from '../utils/autoFillResolver'
+import { buildFormId } from '../utils/formPersistence'
 import { FieldRenderer } from './FieldRenderer'
 import { GroupRenderer } from './GroupRenderer/GroupRenderer'
 import { AutoFillManager } from './AutoFillManager'
 import { isFieldConfig } from '../types/form.types'
 import { useCallback, useMemo, useState } from 'react'
+import { useFormPersistence } from '../hooks/useFormPersistence'
 
 /**
  * Props for FormRenderer component
@@ -25,6 +27,7 @@ export function FormRenderer({ schema }: FormRendererProps) {
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const validationSchema = buildValidationSchema(schema.fields)
+  const formId = buildFormId(schema)
   const autoFillConfigs = useMemo(
     () => resolveAutoFillConfigs(schema.fields),
     [schema.fields],
@@ -34,6 +37,7 @@ export function FormRenderer({ schema }: FormRendererProps) {
     control,
     register,
     unregister,
+    reset,
     clearErrors,
     setValue,
     handleSubmit,
@@ -42,6 +46,8 @@ export function FormRenderer({ schema }: FormRendererProps) {
     resolver: zodResolver(validationSchema),
     shouldUnregister: true,
   })
+
+  const { clearDraft, hasDraft } = useFormPersistence(formId, control, reset)
 
   const onSubmit = (data: object) => {
     try {
@@ -138,6 +144,17 @@ export function FormRenderer({ schema }: FormRendererProps) {
         >
           {isSubmitting ? 'Submitting...' : 'Submit Form'}
         </Button>
+        {hasDraft && (
+          <Button
+            type="button"
+            variant="text"
+            size="small"
+            sx={{ ml: 2 }}
+            onClick={clearDraft}
+          >
+            Clear Draft
+          </Button>
+        )}
       </form>
 
       {submitError && (

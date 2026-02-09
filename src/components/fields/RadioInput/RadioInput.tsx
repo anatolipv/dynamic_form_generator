@@ -6,7 +6,8 @@ import {
   Radio,
   FormHelperText,
 } from '@mui/material'
-import type { UseFormRegister, FieldError, FieldValues } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
+import type { Control, FieldError, FieldValues } from 'react-hook-form'
 
 /**
  * Radio option structure
@@ -33,9 +34,9 @@ interface RadioInputProps {
    */
   options: RadioOption[]
   /**
-   * React Hook Form register function
+   * React Hook Form control object
    */
-  register: UseFormRegister<FieldValues>
+  control: Control<FieldValues>
   /**
    * Validation error if present
    */
@@ -53,7 +54,7 @@ export function RadioInput({
   id,
   label,
   options,
-  register,
+  control,
   error,
 }: RadioInputProps) {
   return (
@@ -64,16 +65,29 @@ export function RadioInput({
       fullWidth
     >
       <FormLabel component="legend">{label}</FormLabel>
-      <RadioGroup>
-        {options.map((option) => (
-          <FormControlLabel
-            key={option.value}
-            value={option.value}
-            control={<Radio {...register(id)} />}
-            label={option.label}
-          />
-        ))}
-      </RadioGroup>
+      <Controller
+        name={id}
+        control={control}
+        render={({ field }) => (
+          <RadioGroup
+            name={field.name}
+            value={field.value ?? ''}
+            onChange={(event) => field.onChange(event.target.value)}
+            onBlur={field.onBlur}
+          >
+            {options.map((option, index) => (
+              <FormControlLabel
+                key={option.value}
+                value={option.value}
+                control={
+                  <Radio inputRef={index === 0 ? field.ref : undefined} />
+                }
+                label={option.label}
+              />
+            ))}
+          </RadioGroup>
+        )}
+      />
       {error && <FormHelperText>{error.message}</FormHelperText>}
     </FormControl>
   )

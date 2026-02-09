@@ -5,7 +5,7 @@ import type {
   FieldError,
   FieldValues,
 } from 'react-hook-form'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { FieldConfig } from '../types/form.types'
 import { TextInput } from './fields/TextInput/TextInput'
 import { TextareaInput } from './fields/TextareaInput/TextareaInput'
@@ -62,11 +62,14 @@ export function FieldRenderer({
   const { shouldShowField } = useConditionalLogic(control, [field.showWhen])
   const fieldPath = parentId ? `${parentId}.${field.id}` : field.id
   const isVisible = shouldShowField(field.showWhen)
+  const wasVisibleRef = useRef(isVisible)
 
   useEffect(() => {
-    if (!isVisible && unregister) {
+    // Unregister only when visibility transitions from visible to hidden.
+    if (wasVisibleRef.current && !isVisible && unregister) {
       unregister(fieldPath)
     }
+    wasVisibleRef.current = isVisible
   }, [fieldPath, isVisible, unregister])
 
   if (!isVisible) {
@@ -103,7 +106,7 @@ export function FieldRenderer({
           id={fieldPath}
           label={field.label}
           options={field.options || []}
-          register={register}
+          control={control}
           error={error}
         />
       )
@@ -124,7 +127,7 @@ export function FieldRenderer({
           id={fieldPath}
           label={field.label}
           options={field.options || []}
-          register={register}
+          control={control}
           error={error}
         />
       )
