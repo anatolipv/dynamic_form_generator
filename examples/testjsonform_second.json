@@ -1,0 +1,74 @@
+{
+  "title": "Zetta Secondary Demo Form",
+  "description": "Second schema for testing per-form auto-save isolation",
+  "fields": [
+    {
+      "id": "requestType",
+      "type": "select",
+      "label": "Request Type",
+      "options": [
+        { "label": "Support", "value": "support" },
+        { "label": "Partnership", "value": "partnership" }
+      ],
+      "validations": [
+        { "type": "required", "message": "Please select request type" }
+      ]
+    },
+    {
+      "id": "fullName",
+      "type": "text",
+      "label": "Full Name",
+      "validations": [
+        { "type": "required", "message": "Full name is required" }
+      ]
+    },
+    {
+      "id": "contactChannel",
+      "type": "radio",
+      "label": "Preferred Contact",
+      "options": [
+        { "label": "Email", "value": "email" },
+        { "label": "Phone", "value": "phone" }
+      ],
+      "validations": [
+        { "type": "required", "message": "Please choose contact channel" }
+      ]
+    },
+    {
+      "id": "email",
+      "type": "text-with-validation",
+      "label": "Email",
+      "showWhen": { "field": "contactChannel", "equals": "email" },
+      "validations": [
+        { "type": "required", "message": "Email is required" },
+        {
+          "type": "pattern",
+          "value": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+          "message": "Invalid email format"
+        }
+      ]
+    },
+    {
+      "id": "phone",
+      "type": "text-with-validation",
+      "label": "Phone",
+      "showWhen": { "field": "contactChannel", "equals": "phone" },
+      "validations": [
+        { "type": "required", "message": "Phone is required" }
+      ]
+    },
+    {
+      "id": "topic",
+      "type": "textarea",
+      "label": "Topic Details"
+    },
+    {
+      "id": "consent",
+      "type": "checkbox",
+      "label": "I agree to be contacted",
+      "validations": [
+        { "type": "required", "message": "Consent is required" }
+      ]
+    }
+  ]
+}
