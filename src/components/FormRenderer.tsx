@@ -15,7 +15,7 @@ import { useFormPersistence } from '../hooks/useFormPersistence'
 /**
  * Props for FormRenderer component
  */
-interface FormRendererProps {
+export interface FormRendererProps {
   schema: FormSchema
 }
 
@@ -76,6 +76,14 @@ export function FormRenderer({ schema }: FormRendererProps) {
     setSubmittedData(null)
     setSubmitError(null)
   }, [clearErrors, submittedData, submitError])
+
+  const handleClearDraft = useCallback(() => {
+    clearDraft()
+    reset({})
+    clearErrors()
+    setSubmittedData(null)
+    setSubmitError(null)
+  }, [clearDraft, clearErrors, reset])
 
   return (
     <Paper
@@ -150,7 +158,7 @@ export function FormRenderer({ schema }: FormRendererProps) {
             variant="text"
             size="small"
             sx={{ ml: 2 }}
-            onClick={clearDraft}
+            onClick={handleClearDraft}
           >
             Clear Draft
           </Button>

@@ -11,12 +11,27 @@ import {
   saveDraft,
 } from '../utils/formPersistence'
 
-interface UseFormPersistenceOptions {
+/**
+ * Optional behavior configuration for form draft persistence.
+ */
+export interface UseFormPersistenceOptions {
+  /**
+   * Delay before persisting the latest form snapshot.
+   */
   debounceMs?: number
 }
 
-interface UseFormPersistenceResult {
+/**
+ * API exposed by the form persistence hook.
+ */
+export interface UseFormPersistenceResult {
+  /**
+   * Removes the currently saved draft for the active form schema.
+   */
   clearDraft: () => void
+  /**
+   * Indicates whether there is a stored draft for the current form.
+   */
   hasDraft: boolean
 }
 
@@ -36,6 +51,7 @@ export function useFormPersistence<TFieldValues extends FieldValues>(
   const isHydratedRef = useRef(false)
   const lastSavedSnapshotRef = useRef<string>('')
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const skipNextPersistRef = useRef(false)
 
   useEffect(() => {
     isHydratedRef.current = false
@@ -60,6 +76,11 @@ export function useFormPersistence<TFieldValues extends FieldValues>(
 
   useEffect(() => {
     if (!isHydratedRef.current) {
+      return
+    }
+
+    if (skipNextPersistRef.current) {
+      skipNextPersistRef.current = false
       return
     }
 
@@ -88,6 +109,12 @@ export function useFormPersistence<TFieldValues extends FieldValues>(
   }, [debounceMs, formId, watchedValues])
 
   const clearDraft = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+
+    skipNextPersistRef.current = true
     clearStoredDraft(formId)
     lastSavedSnapshotRef.current = ''
     setHasDraft(false)
