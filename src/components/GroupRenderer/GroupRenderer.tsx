@@ -1,7 +1,9 @@
 import { Box, Typography } from '@mui/material'
+import { useEffect } from 'react'
 import type {
   Control,
   UseFormRegister,
+  UseFormUnregister,
   FieldError,
   FieldValues,
 } from 'react-hook-form'
@@ -17,6 +19,7 @@ interface GroupRendererProps {
   group: GroupConfig
   control: Control<FieldValues>
   register: UseFormRegister<FieldValues>
+  unregister?: UseFormUnregister<FieldValues>
   errors: Record<string, unknown>
   parentId?: string
 }
@@ -33,16 +36,24 @@ export function GroupRenderer({
   group,
   control,
   register,
+  unregister,
   errors,
   parentId,
 }: GroupRendererProps) {
   const { shouldShowField } = useConditionalLogic(control, [group.showWhen])
+  const isVisible = shouldShowField(group.showWhen)
+  const fullGroupId = parentId ? `${parentId}.${group.id}` : group.id
 
-  if (!shouldShowField(group.showWhen)) {
+  useEffect(() => {
+    if (!isVisible && unregister) {
+      unregister(fullGroupId)
+    }
+  }, [fullGroupId, isVisible, unregister])
+
+  if (!isVisible) {
     return null
   }
 
-  const fullGroupId = parentId ? `${parentId}.${group.id}` : group.id
   const groupErrors = errors[group.id] as Record<string, unknown> | undefined
 
   return (
@@ -71,6 +82,7 @@ export function GroupRenderer({
                 field={item}
                 control={control}
                 register={register}
+                unregister={unregister}
                 error={groupErrors?.[item.id] as FieldError | undefined}
                 parentId={fullGroupId}
               />
@@ -82,6 +94,7 @@ export function GroupRenderer({
                 group={item}
                 control={control}
                 register={register}
+                unregister={unregister}
                 errors={groupErrors || {}}
                 parentId={fullGroupId}
               />

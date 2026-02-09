@@ -1,9 +1,11 @@
 import type {
   Control,
   UseFormRegister,
+  UseFormUnregister,
   FieldError,
   FieldValues,
 } from 'react-hook-form'
+import { useEffect } from 'react'
 import type { FieldConfig } from '../types/form.types'
 import { TextInput } from './fields/TextInput/TextInput'
 import { TextareaInput } from './fields/TextareaInput/TextareaInput'
@@ -33,6 +35,10 @@ interface FieldRendererProps {
    */
   error?: FieldError
   /**
+   * React Hook Form unregister function
+   */
+  unregister?: UseFormUnregister<FieldValues>
+  /**
    * Parent group ID for nested fields
    */
   parentId?: string
@@ -50,15 +56,22 @@ export function FieldRenderer({
   control,
   register,
   error,
+  unregister,
   parentId,
 }: FieldRendererProps) {
   const { shouldShowField } = useConditionalLogic(control, [field.showWhen])
+  const fieldPath = parentId ? `${parentId}.${field.id}` : field.id
+  const isVisible = shouldShowField(field.showWhen)
 
-  if (!shouldShowField(field.showWhen)) {
+  useEffect(() => {
+    if (!isVisible && unregister) {
+      unregister(fieldPath)
+    }
+  }, [fieldPath, isVisible, unregister])
+
+  if (!isVisible) {
     return null
   }
-
-  const fieldPath = parentId ? `${parentId}.${field.id}` : field.id
 
   switch (field.type) {
     case 'text':

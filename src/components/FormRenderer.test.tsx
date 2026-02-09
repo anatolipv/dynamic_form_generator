@@ -47,6 +47,37 @@ describe('FormRenderer', () => {
     ],
   }
 
+  const autoFillSchema: FormSchema = {
+    title: 'Address AutoFill',
+    fields: [
+      {
+        id: 'zipCode',
+        type: 'text',
+        label: 'ZIP Code',
+      },
+      {
+        id: 'city',
+        type: 'text',
+        label: 'City',
+        autoFill: {
+          apiEndpoint: '/api/address',
+          dependsOn: ['zipCode'],
+          targetFields: ['city', 'state', 'country'],
+        },
+      },
+      {
+        id: 'state',
+        type: 'text',
+        label: 'State',
+      },
+      {
+        id: 'country',
+        type: 'text',
+        label: 'Country',
+      },
+    ],
+  }
+
   it('renders form with title and description', () => {
     render(<FormRenderer schema={simpleSchema} />)
 
@@ -135,5 +166,20 @@ describe('FormRenderer', () => {
     })
 
     expect(screen.getByText('Name is required')).toBeInTheDocument()
+  })
+
+  it('auto-fills target fields when dependencies are present', async () => {
+    const user = userEvent.setup()
+
+    render(<FormRenderer schema={autoFillSchema} />)
+
+    const zipInput = screen.getByLabelText('ZIP Code')
+    await user.type(zipInput, '1000')
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Sofia')).toBeInTheDocument()
+    })
+
+    expect(screen.getByDisplayValue('Bulgaria')).toBeInTheDocument()
   })
 })

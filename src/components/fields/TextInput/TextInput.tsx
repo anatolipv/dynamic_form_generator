@@ -46,6 +46,7 @@ export function TextInput({
       {...register(id)}
       label={label}
       placeholder={placeholder}
+      slotProps={{ inputLabel: { shrink: true } }}
       error={!!error}
       helperText={error?.message}
       fullWidth

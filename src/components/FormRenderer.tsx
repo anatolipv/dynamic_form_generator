@@ -3,10 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Box, Button, Typography, Paper, Alert, Divider } from '@mui/material'
 import type { FormSchema } from '../types/form.types'
 import { buildValidationSchema } from '../utils/validationBuilder'
+import { resolveAutoFillConfigs } from '../utils/autoFillResolver'
 import { FieldRenderer } from './FieldRenderer'
 import { GroupRenderer } from './GroupRenderer/GroupRenderer'
+import { AutoFillManager } from './AutoFillManager'
 import { isFieldConfig } from '../types/form.types'
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 /**
  * Props for FormRenderer component
@@ -23,10 +25,17 @@ export function FormRenderer({ schema }: FormRendererProps) {
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const validationSchema = buildValidationSchema(schema.fields)
+  const autoFillConfigs = useMemo(
+    () => resolveAutoFillConfigs(schema.fields),
+    [schema.fields],
+  )
 
   const {
     control,
     register,
+    unregister,
+    clearErrors,
+    setValue,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -44,10 +53,23 @@ export function FormRenderer({ schema }: FormRendererProps) {
     }
   }
 
+  const onValidSubmit = (data: object) => onSubmit(data)
+
   const onInvalidSubmit = () => {
     setSubmittedData(null)
     setSubmitError(null)
   }
+
+  const onFormChange = useCallback(() => {
+    clearErrors()
+
+    if (!submittedData && !submitError) {
+      return
+    }
+
+    setSubmittedData(null)
+    setSubmitError(null)
+  }, [clearErrors, submittedData, submitError])
 
   return (
     <Paper
@@ -70,7 +92,16 @@ export function FormRenderer({ schema }: FormRendererProps) {
         </Typography>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit, onInvalidSubmit)}>
+      <form
+        onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
+        onChange={onFormChange}
+      >
+        <AutoFillManager
+          configs={autoFillConfigs}
+          control={control}
+          setValue={setValue}
+        />
+
         <Box sx={{ mb: 3 }}>
           {schema.fields.map((item) => {
             if (isFieldConfig(item)) {
@@ -80,6 +111,7 @@ export function FormRenderer({ schema }: FormRendererProps) {
                   field={item}
                   control={control}
                   register={register}
+                  unregister={unregister}
                   error={errors[item.id] as FieldError | undefined}
                 />
               )
@@ -90,6 +122,7 @@ export function FormRenderer({ schema }: FormRendererProps) {
                   group={item}
                   control={control}
                   register={register}
+                  unregister={unregister}
                   errors={errors}
                 />
               )
