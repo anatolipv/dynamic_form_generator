@@ -4,7 +4,7 @@ import type { UseFormRegister, FieldError, FieldValues } from 'react-hook-form'
 /**
  * Props for TextInput component
  */
-interface TextInputProps {
+export interface TextInputProps {
   /**
    * Field ID for form registration
    */

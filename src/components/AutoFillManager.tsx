@@ -3,7 +3,10 @@ import type { Control, FieldValues, UseFormSetValue } from 'react-hook-form'
 import type { ResolvedAutoFillConfig } from '../utils/autoFillResolver'
 import { useAutoFill } from '../hooks/useAutoFill'
 
-interface AutoFillManagerProps {
+/**
+ * Props for the auto-fill manager component.
+ */
+export interface AutoFillManagerProps {
   configs: ResolvedAutoFillConfig[]
   control: Control<FieldValues>
   setValue: UseFormSetValue<FieldValues>

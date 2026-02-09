@@ -9,16 +9,26 @@ interface StoredDraft {
 
 const DRAFT_PREFIX = 'form-draft'
 
+/**
+ * Builds a deterministic form identifier based on schema content.
+ * This keeps drafts separated per schema, even if titles are the same.
+ */
 export function buildFormId(schema: FormSchema): string {
   const serializedSchema = JSON.stringify(schema)
   const hash = hashString(serializedSchema)
   return `dynamic-form:${hash}`
 }
 
+/**
+ * Builds localStorage key for a persisted draft.
+ */
 export function buildDraftKey(formId: string): string {
   return `${DRAFT_PREFIX}:${formId}`
 }
 
+/**
+ * Loads saved draft data for a form id, if valid and available.
+ */
 export function loadDraft(formId: string): FieldValues | null {
   try {
     const raw = localStorage.getItem(buildDraftKey(formId))
@@ -35,6 +45,9 @@ export function loadDraft(formId: string): FieldValues | null {
   }
 }
 
+/**
+ * Persists current form values as draft in localStorage.
+ */
 export function saveDraft(formId: string, data: FieldValues): void {
   try {
     const payload: StoredDraft = {
@@ -48,6 +61,9 @@ export function saveDraft(formId: string, data: FieldValues): void {
   }
 }
 
+/**
+ * Removes persisted draft for a form id.
+ */
 export function clearDraft(formId: string): void {
   try {
     localStorage.removeItem(buildDraftKey(formId))

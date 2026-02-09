@@ -4,7 +4,7 @@ import type { UseFormRegister, FieldError, FieldValues } from 'react-hook-form'
 /**
  * Props for TextareaInput component
  */
-interface TextareaInputProps {
+export interface TextareaInputProps {
   /**
    * Field ID for form registration
    */

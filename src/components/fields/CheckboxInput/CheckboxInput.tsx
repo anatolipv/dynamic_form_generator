@@ -4,7 +4,7 @@ import type { UseFormRegister, FieldError, FieldValues } from 'react-hook-form'
 /**
  * Props for CheckboxInput component
  */
-interface CheckboxInputProps {
+export interface CheckboxInputProps {
   /**
    * Field ID for form registration
    */

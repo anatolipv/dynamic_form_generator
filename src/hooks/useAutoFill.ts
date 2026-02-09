@@ -4,8 +4,17 @@ import type { Control, FieldValues, UseFormSetValue } from 'react-hook-form'
 import type { ResolvedAutoFillConfig } from '../utils/autoFillResolver'
 import { fetchAutoFillData } from '../services/apiClient'
 
-interface UseAutoFillResult {
+/**
+ * State exposed by the auto-fill hook.
+ */
+export interface UseAutoFillResult {
+  /**
+   * Indicates whether auto-fill request is currently in progress.
+   */
   loading: boolean
+  /**
+   * Last visible auto-fill error for the current dependency values.
+   */
   error: string | null
 }
 

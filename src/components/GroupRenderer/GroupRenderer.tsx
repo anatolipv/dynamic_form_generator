@@ -15,7 +15,7 @@ import { isFieldConfig } from '../../types/form.types'
 /**
  * Props for GroupRenderer component
  */
-interface GroupRendererProps {
+export interface GroupRendererProps {
   group: GroupConfig
   control: Control<FieldValues>
   register: UseFormRegister<FieldValues>

@@ -6,6 +6,7 @@
   "exclude": ["**/*.test.ts", "**/*.test.tsx"],
   "excludePrivate": true,
   "excludeProtected": true,
+  "disableSources": true,
   "readme": "README.md",
   "name": "Dynamic Form Builder",
   "includeVersion": true

@@ -17,7 +17,7 @@ import type {
 /**
  * Radio option structure
  */
-interface RadioOption {
+export interface RadioOption {
   label: string
   value: string
 }
@@ -25,7 +25,9 @@ interface RadioOption {
 /**
  * Props for RadioInput component
  */
-interface RadioInputProps<TFieldValues extends FieldValues = FieldValues> {
+export interface RadioInputProps<
+  TFieldValues extends FieldValues = FieldValues,
+> {
   /**
    * Field ID for form registration
    */

@@ -6,7 +6,7 @@ import { parseFormSchema } from '../utils/jsonParser'
 /**
  * Props for JSONInput component
  */
-interface JSONInputProps {
+export interface JSONInputProps {
   /**
    * Callback when schema changes (null if invalid)
    */

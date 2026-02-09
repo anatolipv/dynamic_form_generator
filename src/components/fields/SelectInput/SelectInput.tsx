@@ -16,7 +16,7 @@ import type {
 /**
  * Select option structure
  */
-interface SelectOption {
+export interface SelectOption {
   label: string
   value: string
 }
@@ -24,7 +24,9 @@ interface SelectOption {
 /**
  * Props for SelectInput component
  */
-interface SelectInputProps<TFieldValues extends FieldValues = FieldValues> {
+export interface SelectInputProps<
+  TFieldValues extends FieldValues = FieldValues,
+> {
   /**
    * Field ID for form registration
    */

@@ -17,7 +17,7 @@ import { useConditionalLogic } from '../hooks/useConditionalLogic'
 /**
  * Props for FieldRenderer component
  */
-interface FieldRendererProps {
+export interface FieldRendererProps {
   /**
    * Field configuration from schema
    */
