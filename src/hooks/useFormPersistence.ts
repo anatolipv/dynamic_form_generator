@@ -23,10 +23,10 @@ interface UseFormPersistenceResult {
 /**
  * Persists form values in localStorage and restores them when the same form re-mounts.
  */
-export function useFormPersistence(
+export function useFormPersistence<TFieldValues extends FieldValues>(
   formId: string,
-  control: Control<FieldValues>,
-  reset: UseFormReset<FieldValues>,
+  control: Control<TFieldValues>,
+  reset: UseFormReset<TFieldValues>,
   options: UseFormPersistenceOptions = {},
 ): UseFormPersistenceResult {
   const { debounceMs = 500 } = options
@@ -42,8 +42,9 @@ export function useFormPersistence(
 
     const restoredDraft = loadDraft(formId)
     if (restoredDraft) {
-      lastSavedSnapshotRef.current = serialize(restoredDraft)
-      reset(restoredDraft)
+      const draftValues = restoredDraft as TFieldValues
+      lastSavedSnapshotRef.current = serialize(draftValues)
+      reset(draftValues)
     } else {
       lastSavedSnapshotRef.current = ''
     }
@@ -74,7 +75,7 @@ export function useFormPersistence(
 
     timeoutRef.current = setTimeout(() => {
       console.log('[AutoSave] Saving draft', { formId, values: watchedValues })
-      saveDraft(formId, watchedValues ?? {})
+      saveDraft(formId, (watchedValues ?? {}) as FieldValues)
       lastSavedSnapshotRef.current = snapshot
       setHasDraft(true)
     }, debounceMs)

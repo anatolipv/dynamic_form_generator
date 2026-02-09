@@ -6,7 +6,12 @@ import {
   FormHelperText,
 } from '@mui/material'
 import { Controller } from 'react-hook-form'
-import type { Control, FieldError, FieldValues } from 'react-hook-form'
+import type {
+  Control,
+  FieldError,
+  FieldPath,
+  FieldValues,
+} from 'react-hook-form'
 
 /**
  * Select option structure
@@ -19,11 +24,11 @@ interface SelectOption {
 /**
  * Props for SelectInput component
  */
-interface SelectInputProps {
+interface SelectInputProps<TFieldValues extends FieldValues = FieldValues> {
   /**
    * Field ID for form registration
    */
-  id: string
+  id: FieldPath<TFieldValues>
   /**
    * Field label
    */
@@ -35,7 +40,7 @@ interface SelectInputProps {
   /**
    * React Hook Form control object
    */
-  control: Control<FieldValues>
+  control: Control<TFieldValues>
   /**
    * Validation error if present
    */
@@ -49,13 +54,13 @@ interface SelectInputProps {
  *
  * @param props - Component props
  */
-export function SelectInput({
+export function SelectInput<TFieldValues extends FieldValues = FieldValues>({
   id,
   label,
   options,
   control,
   error,
-}: SelectInputProps) {
+}: SelectInputProps<TFieldValues>) {
   return (
     <FormControl
       fullWidth
@@ -64,6 +69,7 @@ export function SelectInput({
     >
       <InputLabel id={`${id}-label`}>{label}</InputLabel>
       <Controller
+        // Typed by caller through generic TFieldValues and id path
         name={id}
         control={control}
         render={({ field }) => (

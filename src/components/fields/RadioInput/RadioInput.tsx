@@ -7,7 +7,12 @@ import {
   FormHelperText,
 } from '@mui/material'
 import { Controller } from 'react-hook-form'
-import type { Control, FieldError, FieldValues } from 'react-hook-form'
+import type {
+  Control,
+  FieldError,
+  FieldPath,
+  FieldValues,
+} from 'react-hook-form'
 
 /**
  * Radio option structure
@@ -20,11 +25,11 @@ interface RadioOption {
 /**
  * Props for RadioInput component
  */
-interface RadioInputProps {
+interface RadioInputProps<TFieldValues extends FieldValues = FieldValues> {
   /**
    * Field ID for form registration
    */
-  id: string
+  id: FieldPath<TFieldValues>
   /**
    * Field label
    */
@@ -36,7 +41,7 @@ interface RadioInputProps {
   /**
    * React Hook Form control object
    */
-  control: Control<FieldValues>
+  control: Control<TFieldValues>
   /**
    * Validation error if present
    */
@@ -50,13 +55,13 @@ interface RadioInputProps {
  *
  * @param props - Component props
  */
-export function RadioInput({
+export function RadioInput<TFieldValues extends FieldValues = FieldValues>({
   id,
   label,
   options,
   control,
   error,
-}: RadioInputProps) {
+}: RadioInputProps<TFieldValues>) {
   return (
     <FormControl
       component="fieldset"
@@ -66,6 +71,7 @@ export function RadioInput({
     >
       <FormLabel component="legend">{label}</FormLabel>
       <Controller
+        // Typed by caller through generic TFieldValues and id path
         name={id}
         control={control}
         render={({ field }) => (

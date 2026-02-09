@@ -12,7 +12,7 @@
     "test:coverage": "vitest --coverage",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "docs": "typedoc --out docs src"
+    "docs": "typedoc --options typedoc.json"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
