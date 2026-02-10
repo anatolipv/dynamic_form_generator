@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/dynamic-form-builder/',
+  base: '/dynamic_form_builder/',
   test: {
     globals: true,
     environment: 'jsdom',
