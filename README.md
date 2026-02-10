@@ -9,7 +9,6 @@ Single-page React application that builds and renders dynamic forms from JSON sc
 - [Demo JSON Schemas](#demo-json-schemas)
 - [JSON Schema Guide](./JSON_SCHEMA_GUIDE.md)
 - [Technical Presentation](./PROJECT_TECH_PRESENTATION.md)
-- [Generated API Docs](./docs/index.html)
 - [Getting Started](#getting-started)
 - [Scripts](#scripts)
 
@@ -115,9 +114,6 @@ Run:
 ```bash
 npm run docs
 ```
-
-Generated HTML docs are available at:
-- [`docs/index.html`](docs/index.html)
 
 Project-level technical overview is available at:
 - [`PROJECT_TECH_PRESENTATION.md`](PROJECT_TECH_PRESENTATION.md)
