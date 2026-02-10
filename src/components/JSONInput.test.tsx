@@ -19,6 +19,29 @@ describe('JSONInput', () => {
 
     expect(screen.getByText('JSON Form Schema')).toBeInTheDocument()
     expect(screen.getByRole('textbox')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Load Demo 1' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Load Demo 2' })).toBeInTheDocument()
+  })
+
+  it('loads demo schema when clicking example button', () => {
+    const mockOnChange = vi.fn()
+    render(<JSONInput onSchemaChange={mockOnChange} />)
+
+    const textarea = screen.getByRole('textbox') as HTMLTextAreaElement
+
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Load Demo 1' }))
+    })
+
+    expect(textarea.value).toContain('"title": "Final Demo Form"')
+
+    act(() => {
+      vi.runAllTimers()
+    })
+
+    expect(mockOnChange).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Final Demo Form' }),
+    )
   })
 
   it('shows error for invalid JSON after debounce', () => {

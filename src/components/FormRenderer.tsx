@@ -108,17 +108,22 @@ export function FormRenderer({ schema }: FormRendererProps) {
     setSubmitError(null)
   }, [clearDraft, clearErrors, reset])
 
-  const updateConfettiOriginFromElement = useCallback((element?: Element | null) => {
-    const target =
-      element && element instanceof HTMLElement ? element : submitButtonRef.current
-    if (!target) return
+  const updateConfettiOriginFromElement = useCallback(
+    (element?: Element | null) => {
+      const target =
+        element && element instanceof HTMLElement
+          ? element
+          : submitButtonRef.current
+      if (!target) return
 
-    const submitButtonRect = target.getBoundingClientRect()
-    setConfettiOrigin({
-      x: submitButtonRect.left + submitButtonRect.width / 2,
-      y: submitButtonRect.top + submitButtonRect.height / 2,
-    })
-  }, [])
+      const submitButtonRect = target.getBoundingClientRect()
+      setConfettiOrigin({
+        x: submitButtonRect.left + submitButtonRect.width / 2,
+        y: submitButtonRect.top + submitButtonRect.height / 2,
+      })
+    },
+    [],
+  )
 
   const handleSubmitButtonClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
@@ -175,157 +180,158 @@ export function FormRenderer({ schema }: FormRendererProps) {
         elevation={2}
         sx={{ p: 3 }}
       >
-      <Typography
-        variant="h5"
-        sx={{ mb: 1 }}
-      >
-        {schema.title}
-      </Typography>
-      {schema.description && (
         <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mb: 3 }}
+          variant="h5"
+          sx={{ mb: 1 }}
         >
-          {schema.description}
+          {schema.title}
         </Typography>
-      )}
-
-      <form
-        onSubmitCapture={handleFormSubmitCapture}
-        onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
-        onChange={onFormChange}
-      >
-        <AutoFillManager
-          configs={autoFillConfigs}
-          control={control}
-          setValue={setValue}
-        />
-
-        <Box sx={{ mb: 3 }}>
-          {schema.fields.map((item) => {
-            if (isFieldConfig(item)) {
-              return (
-                <FieldRenderer
-                  key={item.id}
-                  field={item}
-                  control={control}
-                  register={register}
-                  unregister={unregister}
-                  error={errors[item.id] as FieldError | undefined}
-                />
-              )
-            } else {
-              return (
-                <GroupRenderer
-                  key={item.id}
-                  group={item}
-                  control={control}
-                  register={register}
-                  unregister={unregister}
-                  errors={errors}
-                />
-              )
-            }
-          })}
-        </Box>
-
-        <Button
-          ref={submitButtonRef}
-          type="submit"
-          variant="contained"
-          disabled={isSubmitting}
-          onClick={handleSubmitButtonClick}
-          data-testid="form-submit-button"
-        >
-          {isSubmitting ? 'Submitting...' : 'Submit Form'}
-        </Button>
-        {hasDraft && (
-          <Button
-            type="button"
-            variant="text"
-            size="small"
-            sx={{ ml: 2 }}
-            onClick={handleClearDraft}
+        {schema.description && (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ mb: 3 }}
           >
-            Clear Draft
-          </Button>
+            {schema.description}
+          </Typography>
         )}
-      </form>
 
-      {submitError && (
-        <Alert
-          severity="error"
-          sx={{ mt: 3 }}
+        <form
+          onSubmitCapture={handleFormSubmitCapture}
+          onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
+          onChange={onFormChange}
         >
-          <strong>Submission Error:</strong> {submitError}
-        </Alert>
-      )}
+          <AutoFillManager
+            configs={autoFillConfigs}
+            control={control}
+            setValue={setValue}
+          />
 
-      {submittedData && (
-        <Box sx={{ mt: 3 }}>
-          <Divider sx={{ mb: 2 }} />
-          <Box
-            sx={{
-              mb: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 1.5,
-            }}
-          >
-            <Typography variant="h6">Form Output</Typography>
-            <Button
-              type="button"
-              variant={copyStatus === 'copied' ? 'contained' : 'outlined'}
-              size="small"
-              color={copyStatus === 'error' ? 'error' : 'primary'}
-              onClick={handleCopyOutput}
-              startIcon={
-                copyStatus === 'copied' ? (
-                  <CheckRoundedIcon fontSize="small" />
-                ) : copyStatus === 'error' ? (
-                  <ErrorOutlineRoundedIcon fontSize="small" />
-                ) : (
-                  <ContentCopyRoundedIcon fontSize="small" />
+          <Box sx={{ mb: 3 }}>
+            {schema.fields.map((item) => {
+              if (isFieldConfig(item)) {
+                return (
+                  <FieldRenderer
+                    key={item.id}
+                    field={item}
+                    control={control}
+                    register={register}
+                    unregister={unregister}
+                    error={errors[item.id] as FieldError | undefined}
+                  />
+                )
+              } else {
+                return (
+                  <GroupRenderer
+                    key={item.id}
+                    group={item}
+                    control={control}
+                    register={register}
+                    unregister={unregister}
+                    errors={errors}
+                  />
                 )
               }
-            >
-              {copyStatus === 'copied'
-                ? 'Copied'
-                : copyStatus === 'error'
-                  ? 'Copy Failed'
-                  : 'Copy JSON'}
-            </Button>
+            })}
           </Box>
-          <Paper
-            elevation={1}
-            sx={{
-              p: 2,
-              bgcolor: 'background.default',
-              border: 1,
-              borderColor: 'divider',
-              overflowX: 'auto',
-            }}
+
+          <Button
+            ref={submitButtonRef}
+            type="submit"
+            variant="contained"
+            disabled={isSubmitting}
+            onClick={handleSubmitButtonClick}
+            data-testid="form-submit-button"
           >
+            {isSubmitting ? 'Submitting...' : 'Submit Form'}
+          </Button>
+
+          {hasDraft && (
+            <Button
+              type="button"
+              variant="text"
+              size="small"
+              sx={{ ml: 2 }}
+              onClick={handleClearDraft}
+            >
+              Clear Draft
+            </Button>
+          )}
+        </form>
+
+        {submitError && (
+          <Alert
+            severity="error"
+            sx={{ mt: 3 }}
+          >
+            <strong>Submission Error:</strong> {submitError}
+          </Alert>
+        )}
+
+        {submittedData && (
+          <Box sx={{ mt: 3 }}>
+            <Divider sx={{ mb: 2 }} />
             <Box
-              component="pre"
               sx={{
-                m: 0,
-                fontFamily:
-                  '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace',
-                fontSize: '0.875rem',
-                lineHeight: 1.6,
-                color: 'text.primary',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
+                mb: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 1.5,
               }}
             >
-              {JSON.stringify(submittedData, null, 2)}
+              <Typography variant="h6">Form Output</Typography>
+              <Button
+                type="button"
+                variant={copyStatus === 'copied' ? 'contained' : 'outlined'}
+                size="small"
+                color={copyStatus === 'error' ? 'error' : 'primary'}
+                onClick={handleCopyOutput}
+                startIcon={
+                  copyStatus === 'copied' ? (
+                    <CheckRoundedIcon fontSize="small" />
+                  ) : copyStatus === 'error' ? (
+                    <ErrorOutlineRoundedIcon fontSize="small" />
+                  ) : (
+                    <ContentCopyRoundedIcon fontSize="small" />
+                  )
+                }
+              >
+                {copyStatus === 'copied'
+                  ? 'Copied'
+                  : copyStatus === 'error'
+                    ? 'Copy Failed'
+                    : 'Copy JSON'}
+              </Button>
             </Box>
-          </Paper>
-        </Box>
-      )}
+            <Paper
+              elevation={1}
+              sx={{
+                p: 2,
+                bgcolor: 'background.default',
+                border: 1,
+                borderColor: 'divider',
+                overflowX: 'auto',
+              }}
+            >
+              <Box
+                component="pre"
+                sx={{
+                  m: 0,
+                  fontFamily:
+                    '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace',
+                  fontSize: '0.875rem',
+                  lineHeight: 1.6,
+                  color: 'text.primary',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {JSON.stringify(submittedData, null, 2)}
+              </Box>
+            </Paper>
+          </Box>
+        )}
       </Paper>
     </>
   )

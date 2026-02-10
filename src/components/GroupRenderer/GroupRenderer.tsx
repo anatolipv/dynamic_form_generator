@@ -72,10 +72,7 @@ export function GroupRenderer({
         border: 1,
         borderColor: alpha(theme.palette.primary.main, depth === 0 ? 0.35 : 0.2),
         borderLeftWidth: 4,
-        bgcolor:
-          theme.palette.mode === 'light'
-            ? alpha(theme.palette.primary.main, 0.03 + depth * 0.01)
-            : alpha(theme.palette.primary.main, 0.09 + depth * 0.01),
+        bgcolor: depth === 0 ? alpha(theme.palette.primary.main, 0.03) : 'transparent',
       })}
     >
       <Typography

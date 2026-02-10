@@ -2,6 +2,9 @@
 
 Single-page React application that builds and renders dynamic forms from JSON schema input.
 
+## Live Demo
+- GitHub Pages: `https://anatolipv.github.io/dynamic_form_generator/`
+
 ## Project Goal
 The app accepts JSON schema definition and generates an interactive form with:
 - field rendering by type
