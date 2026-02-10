@@ -2,6 +2,17 @@
 
 Single-page React application that builds and renders dynamic forms from JSON schema input.
 
+## Quick Navigation
+- [Live Demo](https://anatolipv.github.io/dynamic_form_generator/)
+- [Project Goal](#project-goal)
+- [Implemented Features](#implemented-features)
+- [Demo JSON Schemas](#demo-json-schemas)
+- [JSON Schema Guide](./JSON_SCHEMA_GUIDE.md)
+- [Technical Presentation](./PROJECT_TECH_PRESENTATION.md)
+- [Generated API Docs](./docs/index.html)
+- [Getting Started](#getting-started)
+- [Scripts](#scripts)
+
 ## Live Demo
 - GitHub Pages: `https://anatolipv.github.io/dynamic_form_generator/`
 
@@ -71,8 +82,9 @@ npm run dev
 
 ## Demo JSON Schemas
 Use these ready examples:
-- `examples/testjsonform.json` - full scenario with conditional sections, nested groups, dynamic validation, and auto-fill
-- `examples/testjsonform_second.json` - second schema for testing auto-save isolation between forms
+- [Primary demo schema](examples/testjsonform.json) - full scenario with conditional sections, nested groups, dynamic validation, and auto-fill
+- [Secondary demo schema](examples/testjsonform_second.json) - second schema for testing auto-save isolation between forms
+- [JSON Schema Guide](JSON_SCHEMA_GUIDE.md) - authoring instructions and copy-paste examples for all supported field patterns
 
 ## How It Works
 - `JSONInput` parses and validates schema on input change (debounced).
@@ -105,13 +117,13 @@ npm run docs
 ```
 
 Generated HTML docs are available at:
-- `docs/index.html`
+- [`docs/index.html`](docs/index.html)
 
 Project-level technical overview is available at:
-- `PROJECT_TECH_PRESENTATION.md`
+- [`PROJECT_TECH_PRESENTATION.md`](PROJECT_TECH_PRESENTATION.md)
 
 JSON authoring guide with examples is available at:
-- `JSON_SCHEMA_GUIDE.md`
+- [`JSON_SCHEMA_GUIDE.md`](JSON_SCHEMA_GUIDE.md)
 
 ## Testing Scope
 Current test suite covers:
@@ -121,11 +133,3 @@ Current test suite covers:
 - auto-fill resolver
 - form persistence utilities/hook
 - form submit output and invalid submit behavior
-
-## Interview Notes
-This project is implemented with modular architecture to keep responsibilities separated:
-- `src/components` for UI rendering
-- `src/hooks` for stateful form logic
-- `src/utils` for pure transformation/business helpers
-- `src/services` for API layer abstraction
-- `src/types` for schema contracts

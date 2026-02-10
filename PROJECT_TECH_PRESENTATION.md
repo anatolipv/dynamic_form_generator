@@ -26,16 +26,6 @@ Dynamic Form Builder is a React SPA that converts JSON schema into interactive f
 - Auto-fill clears target fields when dependencies are incomplete or request fails.
 - Clear draft now clears both persisted draft and current UI state.
 
-## Requirements Coverage
-- Dynamic JSON form generation: done.
-- Field types (text, textarea, dropdown, checkbox, radio, validated text): done.
-- Nested groups: done.
-- Dynamic visibility and validation: done.
-- Mock API integration: done.
-- Structured submit output: done.
-- Unit tests: done.
-- Optional auto-save: done.
-
 ## Demonstration Assets
 - `examples/testjsonform.json`
 - `examples/testjsonform_second.json`
